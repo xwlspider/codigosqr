@@ -1,53 +1,60 @@
-> Edited for use in IDX on 07/09/12
 
-# Welcome to your Expo app 👋
+# 🏠 Stayly - Aplicación de Hospedajes Exclusivos
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Stayly es una plataforma móvil diseñada para la gestión de reservas de hospedajes seleccionados. A diferencia de aplicaciones masivas, Stayly ofrece una experiencia curada con acceso a 4 propiedades exclusivas, cada una con su propia lógica independiente, integración de mapas y un sistema de check-in basado en códigos QR.
 
-## Get started
+## 🚀 Propósito de la Aplicación
 
-#### Android
+El objetivo principal de Stayly es ofrecer un flujo de usuario lineal y seguro:
 
-Android previews are defined as a `workspace.onStart` hook and started as a vscode task when the workspace is opened/started.
+### **Autenticación**: Acceso protegido mediante login vinculado a Supabase.
 
-Note, if you can't find the task, either:
-- Rebuild the environment (using command palette: `IDX: Rebuild Environment`), or
-- Run `npm run android -- --tunnel` command manually run android and see the output in your terminal. The device should pick up this new command and switch to start displaying the output from it.
+### **Navegación Selectiva**: Un catálogo principal que deriva a archivos independientes por cada hospedaje.
 
-In the output of this command/task, you'll find options to open the app in a
+### **Geolocalización**: Pantalla dedicada para la visualización de mapas y rutas.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### **Transacción Digital**: Formulario de pago con tarjeta y registro en base de datos.
 
-You'll also find options to open the app's developer menu, reload the app, and more.
+### **Validación QR**: Generación de un comprobante digital único con los datos del registro.
 
-#### Web
+## 🛠️ Herramientas y Stack Tecnológico
 
-Web previews will be started and managred automatically. Use the toolbar to manually refresh.
+### Frontend: 
+React Native / Expo con TypeScript (.ts y .tsx).
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Navegación: 
+Expo Router (uso de router.push para flujo entre pantallas).
 
-## Get a fresh project
+### **Backend y Auth**: 
+Supabase (Base de datos y gestión de sesiones).
 
-When you're ready, run:
+### Mapas: 
+React Native Maps (Pantalla de ubicación independiente).
 
-```bash
-npm run reset-project
-```
+### Generación QR: 
+react-native-qrcode-svg (Lógica de comprobantes).
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🏗️ Estructura del Proyecto (Arquitectura)
+Para mantener la coherencia entre la interfaz y la lógica de negocio, el proyecto se organiza de la siguiente manera:
 
-## Learn more
+### /api (Capa de Datos)
+Aquí reside la configuración de Supabase y las funciones de comunicación con el backend (Login, Registro de reservas y consultas).
 
-To learn more about developing your project with Expo, look at the following resources:
+### /logic (Lógica de Negocio)
+Contiene los "Hooks" y funciones puras que no tienen interfaz, como la lógica para procesar los datos del QR y la gestión de coordenadas para el mapa.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### /ui (Componentes de Interfaz)
+Componentes visuales reutilizables como botones, inputs, visores de mapas y contenedores de códigos QR (UI Pura).
 
-## Join the community
+### /app (Pantallas y Navegación)
+login.tsx: Pantalla de entrada y validación de usuario.
 
-Join our community of developers creating universal apps.
+index.tsx: Dashboard principal con información breve de los 4 lugares.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+mapa.tsx: Pantalla independiente que carga la ubicación del hospedaje seleccionado.
+
+hospedajes/: Directorio con 4 archivos independientes (.tsx) para cada estancia.
+
+pago.tsx: Formulario para procesar el pago con tarjeta.
+
+comprobante.tsx: Pantalla de cierre que muestra el QR generado tras la reserva.
