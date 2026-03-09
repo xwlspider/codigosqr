@@ -38,7 +38,15 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      [
+        "expo-camera",
+        {
+          "recordAudioPermission": false,
+          "cameraPermission": "Permite escanear códigos QR de comprobantes."
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,

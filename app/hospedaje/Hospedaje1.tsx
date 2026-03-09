@@ -1,6 +1,9 @@
+// app/hospedaje/Hospedaje1.tsx
+import { router } from 'expo-router';
 import HospedajeScreen, { HospedajeDetalle } from '../../components/HospedajeScreen';
 
 const data: HospedajeDetalle = {
+  id: 1,
   nombre: 'Dreams',
   ubicacion: 'Simón Bolívar, junto a Dos Chorreras',
   precio: '$30',
@@ -19,6 +22,16 @@ const data: HospedajeDetalle = {
   ],
   contacto: '+593 98 123 4567',
   whatsapp: '98 123 4567',
+  onReservar: () => router.push({
+    pathname: '/pago',
+    params: {
+      hospedajeId:     '1',
+      hospedajeNombre: 'Dreams',
+      monto:           '30',
+      checkin:         new Date().toISOString().split('T')[0],
+      checkout:        new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    },
+  }),
 };
 
 export default function Hospedaje1() {

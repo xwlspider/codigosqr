@@ -1,3 +1,5 @@
+//logic/data/hospedajes.data.ts
+
 export interface Hospedaje {
     id: number;
     nombre: string;

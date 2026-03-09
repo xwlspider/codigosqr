@@ -1,3 +1,4 @@
+//logic/Session/useRegister.ts
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { signUp } from '../auth/useAuth';

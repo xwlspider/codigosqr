@@ -1,3 +1,5 @@
+//logic/supabase/supabase.ts
+
 // Importa la función createClient para inicializar la conexión con Supabase
 import { createClient } from '@supabase/supabase-js';
 

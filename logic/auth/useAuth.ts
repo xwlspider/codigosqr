@@ -1,3 +1,4 @@
+//logic/auth/useAuth.ts
 import { supabase } from '../supabase/supabase';
 
 // ─── Tipos compartidos ────────────────────────────────────────────────────────
