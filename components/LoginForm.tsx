@@ -62,6 +62,8 @@ export default function LoginForm({
             autoCorrect={false}
             onFocus={() => setFocusedField('email')}
             onBlur={() => setFocusedField(null)}
+            editable={true}        // ← Agrega esto
+            selectTextOnFocus={false} // ← Y esto
           />
         </View>
         {focusedField === 'email' && <View style={s.fieldUnderline} />}
@@ -83,6 +85,8 @@ export default function LoginForm({
             autoCorrect={false}
             onFocus={() => setFocusedField('pass')}
             onBlur={() => setFocusedField(null)}
+            editable={true}       
+            selectTextOnFocus={false} 
           />
           <TouchableOpacity onPress={() => setShowPassword(p => !p)} style={s.eyeBtn}>
             <Text style={s.eyeText}>{showPassword ? '🙈' : '👁'}</Text>

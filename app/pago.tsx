@@ -1,35 +1,128 @@
 // app/pago.tsx
+// Solo render — toda la lógica está en logic/pago/usePago.ts
 import React, { useRef, useEffect, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, SafeAreaView,
   StatusBar, ScrollView, ActivityIndicator, KeyboardAvoidingView,
-  Platform, Animated, Alert,
+  Platform, Animated, Modal,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { supabase } from '../logic/supabase/supabase';
-import { s, ACCENT, BG, AQUA, BORDER, TEXT, MUTED } from '../components/pago.styles';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {
+  usePago, formatCardNumber, formatExpiry,
+  formatDate, diffDays,
+} from '../logic/pago/usePago';
+import { s, BG, AQUA, BORDER, MUTED } from '../components/pago.styles';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-export const formatCardNumber = (val: string) =>
-  val.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+// ─── Selector de fechas (solo UI) ─────────────────────────────────────────────
+function DateSelector({
+  checkin, checkout, onCheckinChange, onCheckoutChange,
+}: {
+  checkin: Date; checkout: Date;
+  onCheckinChange: (d: Date) => void;
+  onCheckoutChange: (d: Date) => void;
+}) {
+  const [showPicker, setShowPicker] = useState<'checkin' | 'checkout' | null>(null);
+  const [tempDate,   setTempDate]   = useState(new Date());
 
-export const formatExpiry = (val: string) => {
-  const d = val.replace(/\D/g, '').slice(0, 4);
-  return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
-};
+  const nights = diffDays(checkin, checkout);
 
-const detectNetwork = (num: string) => {
-  if (/^4/.test(num))      return '💳 Visa';
-  if (/^5[1-5]/.test(num)) return '💳 Mastercard';
-  if (/^3[47]/.test(num))  return '💳 Amex';
-  return '💳';
-};
+  const openPicker = (type: 'checkin' | 'checkout') => {
+    setTempDate(type === 'checkin' ? checkin : checkout);
+    setShowPicker(type);
+  };
 
-const processMockPayment = async (amount: number) => {
-  await new Promise(r => setTimeout(r, 2000));
-  if (Math.random() > 0.1) return { success: true, transactionId: `TX-${Date.now()}` };
-  throw new Error('El banco no pudo procesar la transacción. Intenta con otra tarjeta.');
-};
+  const handleConfirm = () => {
+    if (showPicker === 'checkin')  onCheckinChange(tempDate);
+    if (showPicker === 'checkout') onCheckoutChange(tempDate);
+    setShowPicker(null);
+  };
+
+  return (
+    <>
+      <View style={s.fechasBox}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={s.fechasTitle}>📅 Selecciona tus fechas</Text>
+          <View style={s.nightsBadge}>
+            <Text style={s.nightsText}>{nights} {nights === 1 ? 'noche' : 'noches'}</Text>
+          </View>
+        </View>
+
+        <View style={s.fechasRow}>
+          <TouchableOpacity
+            style={[s.fechaBtn, showPicker === 'checkin' && s.fechaBtnActive]}
+            onPress={() => openPicker('checkin')}
+            activeOpacity={0.85}
+          >
+            <View style={s.fechaBtnInner}>
+              <Text style={s.fechaBtnIcon}>🛬</Text>
+              <View>
+                <Text style={s.fechaBtnLabel}>CHECK-IN</Text>
+                <Text style={s.fechaBtnValue}>{formatDate(checkin)}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <Text style={s.fechaArrow}>→</Text>
+
+          <TouchableOpacity
+            style={[s.fechaBtn, showPicker === 'checkout' && s.fechaBtnActive]}
+            onPress={() => openPicker('checkout')}
+            activeOpacity={0.85}
+          >
+            <View style={s.fechaBtnInner}>
+              <Text style={s.fechaBtnIcon}>🛫</Text>
+              <View>
+                <Text style={s.fechaBtnLabel}>CHECK-OUT</Text>
+                <Text style={s.fechaBtnValue}>{formatDate(checkout)}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {showPicker && (
+        <Modal transparent animationType="slide" onRequestClose={() => setShowPicker(null)}>
+          <TouchableOpacity style={s.modalBackdrop} activeOpacity={1} onPress={() => setShowPicker(null)}>
+            <TouchableOpacity activeOpacity={1}>
+              <View style={s.modalCard}>
+                <View style={s.modalHeader}>
+                  <Text style={s.modalTitle}>
+                    {showPicker === 'checkin' ? '🛬 Check-in' : '🛫 Check-out'}
+                  </Text>
+                  <Text style={s.modalSub}>
+                    {showPicker === 'checkin' ? 'Fecha de llegada' : 'Fecha de salida'}
+                  </Text>
+                </View>
+
+                <DateTimePicker
+                  value={tempDate}
+                  mode="date"
+                  display={Platform.OS === 'ios' ? 'inline' : 'default'}
+                  minimumDate={showPicker === 'checkout' ? checkin : new Date()}
+                  onChange={(_, date) => { if (date) setTempDate(date); }}
+                  themeVariant="dark"
+                  accentColor={AQUA}
+                  style={s.modalPicker}
+                />
+
+                <View style={s.modalBtns}>
+                  <TouchableOpacity style={s.btnCancelar} onPress={() => setShowPicker(null)}>
+                    <Text style={s.btnCancelarText}>Cancelar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={s.btnConfirmar} onPress={handleConfirm}>
+                    <Text style={s.btnConfirmarText}>Confirmar →</Text>
+                    <View style={s.btnShine} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </Modal>
+      )}
+    </>
+  );
+}
 
 // ─── Pantalla ─────────────────────────────────────────────────────────────────
 export default function PagoScreen() {
@@ -38,17 +131,18 @@ export default function PagoScreen() {
     monto: string; checkin: string; checkout: string;
   }>();
 
-  const [numero,  setNumero]  = useState('');
-  const [titular, setTitular] = useState('');
-  const [expiry,  setExpiry]  = useState('');
-  const [cvv,     setCvv]     = useState('');
-  const [focused, setFocused] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    form, update, loading,
+    redSocial, nights, montoTotal,
+    checkin, checkout,
+    handleCheckinChange, handleCheckoutChange,
+    handlePagar,
+  } = usePago(params);
 
-  // Animaciones
-  const fadeAnim  = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
-  const btnScale  = useRef(new Animated.Value(1)).current;
+  // Animaciones de entrada
+  const fadeAnim     = useRef(new Animated.Value(0)).current;
+  const slideAnim    = useRef(new Animated.Value(30)).current;
+  const btnScale     = useRef(new Animated.Value(1)).current;
   const resumenScale = useRef(new Animated.Value(0.95)).current;
 
   useEffect(() => {
@@ -59,63 +153,12 @@ export default function PagoScreen() {
     ]).start();
   }, []);
 
-  const redSocial = detectNetwork(numero.replace(/\s/g, ''));
-
-  const validate = (): string | null => {
-    if (numero.replace(/\s/g, '').length < 16) return 'Ingresa un número de tarjeta válido.';
-    if (!titular.trim()) return 'Ingresa el nombre del titular.';
-    if (expiry.length < 5) return 'Ingresa la fecha de expiración.';
-    if (cvv.length < 3) return 'Ingresa el CVV.';
-    return null;
-  };
-
-  const handlePagar = async () => {
-    const error = validate();
-    if (error) { Alert.alert('Datos incompletos', error); return; }
-    setLoading(true);
-    try {
-      const { transactionId } = await processMockPayment(Number(params.monto ?? 0));
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No hay sesión activa.');
-      const { error: dbError } = await supabase.from('reservas').insert({
-        user_id: user.id,
-        hospedaje_id:     Number(params.hospedajeId ?? 0),
-        hospedaje_nombre: params.hospedajeNombre ?? '',
-        fecha_checkin:    params.checkin ?? '',
-        fecha_checkout:   params.checkout ?? '',
-        monto:            Number(params.monto ?? 0),
-        ultimos_4:        numero.replace(/\s/g, '').slice(-4),
-        transaction_id:   transactionId,
-        estado:           'confirmada',
-      });
-      if (dbError) throw new Error(dbError.message);
-      router.replace({
-        pathname: '/comprobante',
-        params: {
-          transactionId,
-          hospedajeNombre: params.hospedajeNombre ?? '',
-          monto:    params.monto ?? '0',
-          checkin:  params.checkin ?? '',
-          checkout: params.checkout ?? '',
-          ultimos4: numero.replace(/\s/g, '').slice(-4),
-        },
-      } as any);
-    } catch (err: any) {
-      Alert.alert('Error en el pago', err.message ?? 'Ocurrió un error inesperado.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const inputStyle = (name: string) => [
-    s.inputRow,
-    focused === name && s.inputFocused,
-  ];
+  const [focused, setFocused] = useState<string | null>(null);
+  const inputStyle = (name: string) => [s.inputRow, focused === name && s.inputFocused];
 
   return (
     <SafeAreaView style={s.safe}>
       <StatusBar barStyle="light-content" backgroundColor={BG} />
-      {/* Orbes de fondo */}
       <View style={s.glowTL} />
       <View style={s.glowBR} />
 
@@ -131,6 +174,16 @@ export default function PagoScreen() {
             <Text style={s.subtitle}>🔒 PCI DSS Compliant · Encriptado</Text>
           </Animated.View>
 
+          {/* Selector de fechas */}
+          <Animated.View style={{ opacity: fadeAnim }}>
+            <DateSelector
+              checkin={checkin}
+              checkout={checkout}
+              onCheckinChange={handleCheckinChange}
+              onCheckoutChange={handleCheckoutChange}
+            />
+          </Animated.View>
+
           {/* Resumen */}
           <Animated.View style={[s.resumenBox, { transform: [{ scale: resumenScale }] }]}>
             <Text style={s.resumenLabel}>Hospedaje</Text>
@@ -138,20 +191,20 @@ export default function PagoScreen() {
             <View style={s.resumenRow}>
               <View>
                 <Text style={s.resumenLabel}>Check-in</Text>
-                <Text style={s.resumenValue}>{params.checkin ?? '—'}</Text>
+                <Text style={s.resumenValue}>{formatDate(checkin)}</Text>
               </View>
               <View>
                 <Text style={s.resumenLabel}>Check-out</Text>
-                <Text style={s.resumenValue}>{params.checkout ?? '—'}</Text>
+                <Text style={s.resumenValue}>{formatDate(checkout)}</Text>
               </View>
               <View>
-                <Text style={s.resumenLabel}>Total</Text>
-                <Text style={[s.resumenValue, { color: AQUA }]}>${params.monto ?? '0'}</Text>
+                <Text style={s.resumenLabel}>{nights} {nights === 1 ? 'noche' : 'noches'}</Text>
+                <Text style={[s.resumenValue, { color: AQUA }]}>${montoTotal}</Text>
               </View>
             </View>
           </Animated.View>
 
-          {/* Formulario */}
+          {/* Formulario tarjeta */}
           <Animated.View style={[s.card, { opacity: fadeAnim }]}>
             <View style={s.cardGlow} />
 
@@ -162,7 +215,7 @@ export default function PagoScreen() {
                 <Text style={s.networkIcon}>{redSocial}</Text>
                 <TextInput
                   style={s.input} placeholder="0000 0000 0000 0000" placeholderTextColor="#1a4a45"
-                  value={numero} onChangeText={v => setNumero(formatCardNumber(v))}
+                  value={form.numero} onChangeText={v => update('numero')(formatCardNumber(v))}
                   keyboardType="numeric" maxLength={19}
                   onFocus={() => setFocused('numero')} onBlur={() => setFocused(null)}
                 />
@@ -176,7 +229,7 @@ export default function PagoScreen() {
                 <Text style={s.networkIcon}>👤</Text>
                 <TextInput
                   style={s.input} placeholder="Nombre como aparece en la tarjeta" placeholderTextColor="#1a4a45"
-                  value={titular} onChangeText={setTitular} autoCapitalize="characters"
+                  value={form.titular} onChangeText={update('titular')} autoCapitalize="characters"
                   onFocus={() => setFocused('titular')} onBlur={() => setFocused(null)}
                 />
               </View>
@@ -190,7 +243,7 @@ export default function PagoScreen() {
                   <Text style={s.networkIcon}>📅</Text>
                   <TextInput
                     style={s.input} placeholder="MM/AA" placeholderTextColor="#1a4a45"
-                    value={expiry} onChangeText={v => setExpiry(formatExpiry(v))}
+                    value={form.expiry} onChangeText={v => update('expiry')(formatExpiry(v))}
                     keyboardType="numeric" maxLength={5}
                     onFocus={() => setFocused('expiry')} onBlur={() => setFocused(null)}
                   />
@@ -202,7 +255,7 @@ export default function PagoScreen() {
                   <Text style={s.networkIcon}>🔐</Text>
                   <TextInput
                     style={s.input} placeholder="123" placeholderTextColor="#1a4a45"
-                    value={cvv} onChangeText={v => setCvv(v.replace(/\D/g, '').slice(0, 4))}
+                    value={form.cvv} onChangeText={v => update('cvv')(v.replace(/\D/g, '').slice(0, 4))}
                     keyboardType="numeric" maxLength={4} secureTextEntry
                     onFocus={() => setFocused('cvv')} onBlur={() => setFocused(null)}
                   />
@@ -210,7 +263,7 @@ export default function PagoScreen() {
               </View>
             </View>
 
-            {/* Botón pagar */}
+            {/* Botón */}
             <Animated.View style={{ transform: [{ scale: btnScale }] }}>
               <TouchableOpacity
                 style={[s.btnPagar, loading && s.btnDisabled]}
@@ -222,7 +275,10 @@ export default function PagoScreen() {
                 <View style={s.btnInner}>
                   {loading
                     ? <ActivityIndicator color="#001a1a" />
-                    : <><Text style={s.btnText}>Completar pago</Text><Text style={s.btnText}> →</Text></>
+                    : <>
+                        <Text style={s.btnText}>Pagar ${montoTotal}</Text>
+                        <Text style={s.btnText}> →</Text>
+                      </>
                   }
                 </View>
                 <View style={s.btnShine} />

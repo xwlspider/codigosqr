@@ -85,8 +85,8 @@ export default function RegisterForm({
 
   return (
     <Animated.View style={[s.card, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-      <View style={s.glowTopRight} />
-      <View style={s.glowBottomLeft} />
+      <View pointerEvents="none" style={s.glowTopRight} />
+      <View pointerEvents="none" style={s.glowBottomLeft} />
 
       {/* Nombre + Apellido */}
       <View style={s.row}>

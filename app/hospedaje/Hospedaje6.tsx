@@ -1,39 +1,38 @@
-// app/hospedaje/Hospedaje6.tsx
-import { router } from 'expo-router';
 import HospedajeScreen, { HospedajeDetalle } from '../../components/HospedajeScreen';
+import { router } from 'expo-router';
 
 const data: HospedajeDetalle = {
-  id: 6,
-  nombre: 'Montaña Lodge',
-  ubicacion: 'Baños, Cuenca',
-  precio: '$40',
-  descripcion: 'Un hermoso lodge rodeado de montañas y aire puro. Ideal para escapadas románticas o para descansar en medio de la naturaleza.',
-  imagen: require('../../assets/images/hospedaje6.jpg'),
-  tag: 'Vista montaña',
-  tagColor: '#0ea5e9',
-  habitaciones: 5,
+  nombre: 'El Ventanal',
+  ubicacion: 'Av. Solano, esquina con Remigio Crespo',
+  precio: '$65',
+  descripcion: 'Vistas panorámicas del Tomebamba desde cada habitación. Despierta con el sonido del río y el verde de los eucaliptos.',
+  imagen: require('../../assets/images/Hospedaje6FOTO1.png'),
+  tag: 'Vistas',
+  tagColor: '#06b6d4',
+  habitaciones: 10,
   servicios: [
-    { icono: '🔥', nombre: 'Chimenea' },
     { icono: '📶', nombre: 'WiFi gratis' },
     { icono: '🍳', nombre: 'Desayuno' },
-    { icono: '🚿', nombre: 'Baño privado' },
-    { icono: '🌄', nombre: 'Vista panorámica' },
+    { icono: '❄️', nombre: 'Aire acondicionado' },
     { icono: '🅿️', nombre: 'Parqueadero' },
+    { icono: '🌊', nombre: 'Vista al río' },
+    { icono: '📺', nombre: 'TV cable' },
   ],
-  contacto: '+593 98 654 3210',
-  whatsapp: '98 654 3210',
+  contacto: '+593 99 345 6789',
+  whatsapp: '99 345 6789',
+  id: 6,
   onReservar: () => router.push({
     pathname: '/pago',
     params: {
-      hospedajeId: '6',
-      hospedajeNombre: 'Montaña Lodge',
-      monto: '40',
-      checkin: new Date().toISOString().split('T')[0],
-      checkout: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      hospedajeId:     '6',
+      hospedajeNombre: 'El Ventanal',
+      monto:           '65',
+      checkin:         new Date().toISOString().split('T')[0],
+      checkout:        new Date(Date.now() + 86400000).toISOString().split('T')[0],
     },
   }),
 };
 
-export default function Hospedaje6() {
+export default function Hospedaje5() {
   return <HospedajeScreen data={data} />;
 }

@@ -5,7 +5,6 @@ import {
   Image, SafeAreaView, StatusBar, Animated,
 } from 'react-native';
 import { router } from 'expo-router';
-import { supabase } from '../logic/supabase/supabase';
 import { HOSPEDAJES, Hospedaje } from '../logic/data/hospedajes.data';
 import { styles, AQUA, MUTED, TEXT } from '../components/index.styles';
 import Perfil from '../app/perfil';
@@ -134,7 +133,7 @@ function TabScanner() {
   );
 }
 
-// Tab Perfil usa el componente separado
+// ─── Tab: Perfil ──────────────────────────────────────────────────────────────
 function TabPerfil() {
   return <Perfil />;
 }
@@ -146,8 +145,8 @@ function TabBtn({ icon, label, active, onPress }: {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const handlePress = () => {
     Animated.sequence([
-      Animated.timing(scaleAnim, { toValue: 0.85, duration: 80,  useNativeDriver: true }),
-      Animated.spring(scaleAnim, { toValue: 1,    tension: 200, friction: 8, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 0.85, duration: 80, useNativeDriver: true }),
+      Animated.spring(scaleAnim, { toValue: 1, tension: 200, friction: 8, useNativeDriver: true }),
     ]).start();
     onPress();
   };
@@ -175,7 +174,6 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" backgroundColor="#010a09" />
-
       <View style={{ flex: 1 }}>
         {activeTab === 'hospedajes' && <TabHospedajes />}
         {activeTab === 'scanner'    && <TabScanner />}

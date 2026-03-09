@@ -36,10 +36,11 @@ export default function RegisterScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={s.safe}>
-      <View style={s.bgTop} />
-      <View style={s.bgOrb1} />
-      <View style={s.bgOrb2} />
+<SafeAreaView style={s.safe}>
+  {/* CORRECCIÓN: Añadimos pointerEvents="none" a los 3 fondos */}
+  <View pointerEvents="none" style={s.bgTop} />
+  <View pointerEvents="none" style={s.bgOrb1} />
+  <View pointerEvents="none" style={s.bgOrb2} />
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={s.flex}>
         <ScrollView

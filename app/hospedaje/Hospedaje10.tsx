@@ -1,35 +1,35 @@
-// app/hospedaje/Hospedaje10.tsx
-import { router } from 'expo-router';
 import HospedajeScreen, { HospedajeDetalle } from '../../components/HospedajeScreen';
+import { router } from 'expo-router';
 
 const data: HospedajeDetalle = {
-  id: 10,
-  nombre: 'Refugio Andino',
-  ubicacion: 'El Cajas, Azuay',
-  precio: '$60',
-  descripcion: 'Un refugio perfecto para amantes de la naturaleza. Disfruta del aire puro, paisajes andinos y tranquilidad total.',
-  imagen: require('../../assets/images/hospedaje10.jpg'),
-  tag: 'Aventura',
-  tagColor: '#14b8a6',
-  habitaciones: 7,
+  nombre: 'Hotel Yanuncay',
+  ubicacion: 'Av. 12 de Abril, junto al río Yanuncay',
+  precio: '$75',
+  descripcion: 'Moderno y tranquilo, al costado del río que serpentea entre jardines. Ideal para familias y parejas que buscan calma.',
+  imagen: require('../../assets/images/Hospedaje10FOTO1.png'),
+  tag: 'Familiar',
+  tagColor: '#3b82f6',
+  habitaciones: 18,
   servicios: [
-    { icono: '🔥', nombre: 'Chimenea' },
     { icono: '📶', nombre: 'WiFi gratis' },
     { icono: '🍳', nombre: 'Desayuno' },
-    { icono: '🌄', nombre: 'Vista montaña' },
-    { icono: '🚿', nombre: 'Baño privado' },
     { icono: '🅿️', nombre: 'Parqueadero' },
+    { icono: '❄️', nombre: 'Aire acondicionado' },
+    { icono: '🌿', nombre: 'Jardín' },
+    { icono: '👶', nombre: 'Apto familias' },
+    { icono: '📺', nombre: 'TV cable' },
   ],
-  contacto: '+593 94 333 2211',
-  whatsapp: '94 333 2211',
+  contacto: '+593 98 467 2753',
+  whatsapp: '98 467 2753',
+  id: 10,
   onReservar: () => router.push({
     pathname: '/pago',
     params: {
-      hospedajeId: '10',
-      hospedajeNombre: 'Refugio Andino',
-      monto: '55',
-      checkin: new Date().toISOString().split('T')[0],
-      checkout: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      hospedajeId:     '10',
+      hospedajeNombre: 'Hotel Yanuncay',
+      monto:           '75',
+      checkin:         new Date().toISOString().split('T')[0],
+      checkout:        new Date(Date.now() + 86400000).toISOString().split('T')[0],
     },
   }),
 };

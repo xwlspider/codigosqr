@@ -1,35 +1,32 @@
-// app/hospedaje/Hospedaje7.tsx
-import { router } from 'expo-router';
 import HospedajeScreen, { HospedajeDetalle } from '../../components/HospedajeScreen';
+import { router } from 'expo-router';
 
 const data: HospedajeDetalle = {
-  id: 7,
-  nombre: 'Rosamia Hotel',
-  ubicacion: 'Centro Histórico de Cuenca',
-  precio: '$45',
-  descripcion: 'Hotel moderno ubicado en el corazón de Cuenca, cerca de restaurantes, museos y lugares turísticos.',
-  imagen: require('../../assets/images/hospedaje7.jpg'),
-  tag: 'Centro',
-  tagColor: '#f59e0b',
-  habitaciones: 12,
+  nombre: 'Posada del Barranco',
+  ubicacion: 'Bajada del Padrón, orillas del Tomebamba',
+  precio: '$38',
+  descripcion: 'Al borde del barranco más famoso de Cuenca. Silencio, naturaleza y una hospitalidad que te hace sentir como en casa.',
+  imagen: require('../../assets/images/Hospedaje7FOTO1.png'),
+  tag: 'Naturaleza',
+  tagColor: '#16a34a',
+  habitaciones: 6,
   servicios: [
     { icono: '📶', nombre: 'WiFi gratis' },
-    { icono: '🍳', nombre: 'Desayuno incluido' },
-    { icono: '📺', nombre: 'TV cable' },
-    { icono: '🛎️', nombre: 'Recepción 24h' },
-    { icono: '🚿', nombre: 'Baño privado' },
-    { icono: '🧹', nombre: 'Limpieza diaria' },
+    { icono: '🌿', nombre: 'Jardín natural' },
+    { icono: '☕', nombre: 'Café incluido' },
+    { icono: '🔒', nombre: 'Seguridad 24h' },
   ],
-  contacto: '+593 97 888 4455',
-  whatsapp: '97 888 4455',
+  contacto: '+593 96 456 7890',
+  whatsapp: '96 456 7890',
+  id: 7,
   onReservar: () => router.push({
     pathname: '/pago',
     params: {
-      hospedajeId: '7',
-      hospedajeNombre: 'Rosamia Hotel',
-      monto: '45',
-      checkin: new Date().toISOString().split('T')[0],
-      checkout: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      hospedajeId:     '7',
+      hospedajeNombre: 'Posada del Barranco',
+      monto:           '38',
+      checkin:         new Date().toISOString().split('T')[0],
+      checkout:        new Date(Date.now() + 86400000).toISOString().split('T')[0],
     },
   }),
 };

@@ -1,12 +1,12 @@
-// app/Login.tsx
 import React, { useRef, useEffect } from 'react';
 import {
-  KeyboardAvoidingView, Platform, SafeAreaView,
-  ScrollView, StyleSheet, Text, View, Animated,
+  SafeAreaView, StyleSheet, Text, View, Animated,
 } from 'react-native';
 import { router } from 'expo-router';
 import LoginForm from '../../components/LoginForm';
 import { useLogin } from '../../logic/Session/useLogin';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 export default function LoginScreen() {
   const { form, update, loading, handleLogin } = useLogin({
@@ -42,18 +42,20 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView style={s.safe}>
-      {/* Fondo con gradiente simulado */}
-      <View style={s.bgTop} />
-      <View style={s.bgOrb1} />
-      <View style={s.bgOrb2} />
-      <View style={s.bgGrid} />
+    {/* Capas de fondo - Mantener aquí pero asegurar que no bloqueen */}
+    <View pointerEvents="none" style={s.bgTop} />
+    <View pointerEvents="none" style={s.bgOrb1} />
+    <View pointerEvents="none" style={s.bgOrb2} />
+    <View pointerEvents="none" style={s.bgGrid} />
 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={s.flex}>
-        <ScrollView
-          contentContainerStyle={s.container}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+      <KeyboardAwareScrollView
+        contentContainerStyle={s.container}
+        keyboardShouldPersistTaps="handled"
+        enableOnAndroid={true}
+        extraScrollHeight={20}
+        showsVerticalScrollIndicator={false}
+      >
+
           {/* Header animado */}
           <View style={s.header}>
 
@@ -76,9 +78,7 @@ export default function LoginScreen() {
 
           {/* Formulario */}
           <LoginForm form={form} update={update} loading={loading} onSubmit={handleLogin} />
-
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }

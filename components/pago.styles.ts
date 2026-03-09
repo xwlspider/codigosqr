@@ -25,6 +25,33 @@ export const s = StyleSheet.create({
   title:    { fontSize: 28, fontWeight: '900', color: TEXT, letterSpacing: -0.8 },
   subtitle: { fontSize: 12, color: MUTED },
 
+  // ── Selector de fechas ────────────────────────────────────────────────────
+  fechasBox:      { backgroundColor: CARD, borderRadius: 18, borderWidth: 1, borderColor: BORDER, padding: 16, gap: 12, marginBottom: 16 },
+  fechasTitle:    { fontSize: 13, fontWeight: '800', color: TEXT, letterSpacing: -0.2 },
+  fechasRow:      { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  fechaBtn:       { flex: 1, backgroundColor: '#030f0e', borderRadius: 14, borderWidth: 1, borderColor: BORDER, padding: 12 },
+  fechaBtnActive: { borderColor: AQUA, shadowColor: AQUA, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 4 },
+  fechaBtnInner:  { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  fechaBtnIcon:   { fontSize: 18 },
+  fechaBtnLabel:  { fontSize: 9, color: MUTED, fontWeight: '800', letterSpacing: 1.5, textTransform: 'uppercase' },
+  fechaBtnValue:  { fontSize: 13, color: TEXT, fontWeight: '700', marginTop: 2 },
+  fechaArrow:     { color: AQUA2, fontSize: 16, fontWeight: '700' },
+  nightsBadge:    { alignSelf: 'flex-start', backgroundColor: 'rgba(0,229,204,0.08)', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: 'rgba(0,229,204,0.18)' },
+  nightsText:     { fontSize: 11, color: AQUA, fontWeight: '700' },
+
+  // Modal del date picker
+  modalBackdrop:    { flex: 1, backgroundColor: 'rgba(1,10,9,0.88)', justifyContent: 'flex-end' },
+  modalCard:        { backgroundColor: '#0d1f1d', borderTopLeftRadius: 28, borderTopRightRadius: 28, borderWidth: 1, borderColor: BORDER, paddingBottom: 36 },
+  modalHeader:      { paddingHorizontal: 24, paddingTop: 24, paddingBottom: 8, gap: 4 },
+  modalTitle:       { fontSize: 20, fontWeight: '900', color: TEXT, letterSpacing: -0.5 },
+  modalSub:         { fontSize: 13, color: MUTED },
+  modalPicker:      { marginHorizontal: 8 },
+  modalBtns:        { flexDirection: 'row', gap: 12, paddingHorizontal: 24, marginTop: 16 },
+  btnCancelar:      { flex: 1, backgroundColor: '#020f0e', borderRadius: 14, paddingVertical: 14, alignItems: 'center', borderWidth: 1, borderColor: BORDER },
+  btnCancelarText:  { color: MUTED, fontWeight: '700', fontSize: 15 },
+  btnConfirmar:     { flex: 1, backgroundColor: AQUA, borderRadius: 14, paddingVertical: 14, alignItems: 'center', overflow: 'hidden', shadowColor: AQUA, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 8 },
+  btnConfirmarText: { color: '#001a1a', fontWeight: '900', fontSize: 15 },
+
   // Resumen
   resumenBox:   { backgroundColor: CARD, borderRadius: 18, borderWidth: 1, borderColor: BORDER, padding: 18, gap: 10, marginBottom: 20 },
   resumenRow:   { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },

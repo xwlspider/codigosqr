@@ -1,35 +1,35 @@
-// app/hospedaje/Hospedaje8.tsx
-import { router } from 'expo-router';
 import HospedajeScreen, { HospedajeDetalle } from '../../components/HospedajeScreen';
+import { router } from 'expo-router';
 
 const data: HospedajeDetalle = {
-  id: 8,
-  nombre: 'Casa Colonial',
-  ubicacion: 'Parque Calderón, Cuenca',
-  precio: '$50',
-  descripcion: 'Una casa colonial con arquitectura tradicional cuencana, ubicada cerca de los principales atractivos turísticos.',
-  imagen: require('../../assets/images/hospedaje8.jpg'),
-  tag: 'Histórico',
-  tagColor: '#ef4444',
-  habitaciones: 10,
+  nombre: 'Suite Turi',
+  ubicacion: 'Mirador de Turi, vía a Baños',
+  precio: '$150',
+  descripcion: 'El único hospedaje con vista completa a toda la ciudad iluminada de noche. Una experiencia que no se repite.',
+  imagen: require('../../assets/images/Hospedaje8FOTO1.png'),
+  tag: 'Lujo',
+  tagColor: '#f59e0b',
+  habitaciones: 5,
   servicios: [
     { icono: '📶', nombre: 'WiFi gratis' },
-    { icono: '🍳', nombre: 'Desayuno' },
-    { icono: '📺', nombre: 'TV cable' },
-    { icono: '🚿', nombre: 'Baño privado' },
-    { icono: '🛎️', nombre: 'Recepción' },
-    { icono: '🧹', nombre: 'Limpieza diaria' },
+    { icono: '🍳', nombre: 'Desayuno buffet' },
+    { icono: '🅿️', nombre: 'Parqueadero' },
+    { icono: '❄️', nombre: 'Aire acondicionado' },
+    { icono: '💆', nombre: 'Spa' },
+    { icono: '🛎️', nombre: 'Room service' },
+    { icono: '🌆', nombre: 'Vista panorámica' },
   ],
-  contacto: '+593 96 222 1144',
-  whatsapp: '96 222 1144',
+  contacto: '+593 97 567 8901',
+  whatsapp: '97 567 8901',
+  id: 8,
   onReservar: () => router.push({
     pathname: '/pago',
     params: {
-      hospedajeId: '8',
-      hospedajeNombre: 'Casa Colonial',
-      monto: '50',
-      checkin: new Date().toISOString().split('T')[0],
-      checkout: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+      hospedajeId:     '8',
+      hospedajeNombre: 'Suite Turi',
+      monto:           '150',
+      checkin:         new Date().toISOString().split('T')[0],
+      checkout:        new Date(Date.now() + 86400000).toISOString().split('T')[0],
     },
   }),
 };

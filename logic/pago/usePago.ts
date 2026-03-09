@@ -1,20 +1,18 @@
+// logic/pago/usePago.ts
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { router } from 'expo-router';
 import { supabase } from '../supabase/supabase';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
-
-// Parámetros que llegan desde la pantalla del hospedaje vía router.push
 export interface PagoParams {
   hospedajeId:     string;
   hospedajeNombre: string;
-  monto:           string;
+  monto:           string;   // precio por noche
   checkin:         string;
   checkout:        string;
 }
 
-// Estado interno del formulario de tarjeta
 export interface TarjetaForm {
   numero:  string;
   titular: string;
@@ -23,18 +21,14 @@ export interface TarjetaForm {
 }
 
 // ─── Helpers de formato ───────────────────────────────────────────────────────
-
-// Agrega espacios cada 4 dígitos: "1234567812345678" → "1234 5678 1234 5678"
 export const formatCardNumber = (val: string) =>
   val.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
 
-// Inserta la barra de expiración: "1225" → "12/25"
 export const formatExpiry = (val: string) => {
-  const digits = val.replace(/\D/g, '').slice(0, 4);
-  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+  const d = val.replace(/\D/g, '').slice(0, 4);
+  return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
 };
 
-// Detecta la red de la tarjeta según el primer dígito
 export const detectNetwork = (num: string): string => {
   if (/^4/.test(num))      return '💳 Visa';
   if (/^5[1-5]/.test(num)) return '💳 Mastercard';
@@ -42,24 +36,22 @@ export const detectNetwork = (num: string): string => {
   return '💳';
 };
 
-// ─── Mock de pasarela de pago ─────────────────────────────────────────────────
-// Simula una llamada a una pasarela real (Stripe, PayPal, etc.)
-// Tiene un 10% de probabilidad de fallo para simular errores del banco
-const processMockPayment = async (amount: number) => {
-  // Simula latencia de red de 2 segundos
-  await new Promise(resolve => setTimeout(resolve, 2000));
+export const diffDays = (a: Date, b: Date) =>
+  Math.max(1, Math.round((b.getTime() - a.getTime()) / 86400000));
 
-  const isSuccess = Math.random() > 0.1;
-  if (isSuccess) {
-    // Genera un ID de transacción único basado en el timestamp
-    return { success: true, transactionId: `TX-${Date.now()}` };
-  } else {
-    throw new Error('El banco no pudo procesar la transacción. Intenta con otra tarjeta.');
-  }
+export const toISO = (d: Date) => d.toISOString().split('T')[0];
+
+export const formatDate = (d: Date) =>
+  d.toLocaleDateString('es-EC', { day: '2-digit', month: 'short', year: 'numeric' });
+
+// ─── Mock de pasarela ─────────────────────────────────────────────────────────
+const processMockPayment = async (_amount: number) => {
+  await new Promise(r => setTimeout(r, 2000));
+  if (Math.random() > 0.1) return { success: true, transactionId: `TX-${Date.now()}` };
+  throw new Error('El banco no pudo procesar la transacción. Intenta con otra tarjeta.');
 };
 
-// ─── Validación del formulario ────────────────────────────────────────────────
-// Retorna string con el error encontrado, o null si todo está correcto
+// ─── Validación ───────────────────────────────────────────────────────────────
 const validate = (form: TarjetaForm): string | null => {
   if (form.numero.replace(/\s/g, '').length < 16) return 'Ingresa un número de tarjeta válido.';
   if (!form.titular.trim())                        return 'Ingresa el nombre del titular.';
@@ -70,69 +62,80 @@ const validate = (form: TarjetaForm): string | null => {
 
 // ─── Hook principal ───────────────────────────────────────────────────────────
 export function usePago(params: PagoParams) {
-  // Estado del formulario de tarjeta
   const [form, setForm] = useState<TarjetaForm>({
-    numero:  '',
-    titular: '',
-    expiry:  '',
-    cvv:     '',
+    numero: '', titular: '', expiry: '', cvv: '',
   });
   const [loading, setLoading] = useState(false);
 
-  // Actualizador genérico de campos del formulario
+  // Fechas: inicializa desde params o usa hoy/mañana
+  const [checkin, setCheckin] = useState<Date>(() => {
+    const d = new Date(params.checkin);
+    return isNaN(d.getTime()) ? new Date() : d;
+  });
+  const [checkout, setCheckout] = useState<Date>(() => {
+    const d = new Date(params.checkout);
+    if (!isNaN(d.getTime())) return d;
+    const t = new Date(); t.setDate(t.getDate() + 1); return t;
+  });
+
   const update = (key: keyof TarjetaForm) => (val: string) =>
     setForm(prev => ({ ...prev, [key]: val }));
 
-  // Red detectada en tiempo real según los primeros dígitos
-  const redSocial = detectNetwork(form.numero.replace(/\s/g, ''));
+  const redSocial  = detectNetwork(form.numero.replace(/\s/g, ''));
+  const nights     = diffDays(checkin, checkout);
+  const precioBase = Number(params.monto ?? 0);
+  const montoTotal = precioBase * nights;
 
-  // ── Flujo completo de pago ─────────────────────────────────────────────────
-  const handlePagar = async () => {
-    // 1. Validar formulario antes de hacer cualquier llamada
-    const error = validate(form);
-    if (error) {
-      Alert.alert('Datos incompletos', error);
-      return;
+  // Actualiza checkout automáticamente si checkin queda después
+  const handleCheckinChange = (d: Date) => {
+    setCheckin(d);
+    if (d >= checkout) {
+      const next = new Date(d);
+      next.setDate(next.getDate() + 1);
+      setCheckout(next);
     }
+  };
+
+  const handleCheckoutChange = (d: Date) => {
+    if (d > checkin) setCheckout(d);
+  };
+
+  // ── Flujo de pago ──────────────────────────────────────────────────────────
+  const handlePagar = async () => {
+    const error = validate(form);
+    if (error) { Alert.alert('Datos incompletos', error); return; }
 
     setLoading(true);
     try {
-      // 2. Llamar a la pasarela de pago (mock por ahora)
-      const { transactionId } = await processMockPayment(Number(params.monto ?? 0));
+      const { transactionId } = await processMockPayment(montoTotal);
 
-      // 3. Verificar que hay sesión activa (el usuario está logueado)
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('No hay sesión activa.');
 
-      // 4. Guardar la reserva confirmada en la tabla "reservas" de Supabase
       const { error: dbError } = await supabase.from('reservas').insert({
         user_id:          user.id,
         hospedaje_id:     Number(params.hospedajeId ?? 0),
         hospedaje_nombre: params.hospedajeNombre ?? '',
-        fecha_checkin:    params.checkin ?? '',
-        fecha_checkout:   params.checkout ?? '',
-        monto:            Number(params.monto ?? 0),
-        // Solo guardamos los últimos 4 dígitos, nunca el número completo
+        fecha_checkin:    toISO(checkin),
+        fecha_checkout:   toISO(checkout),
+        monto:            montoTotal,
         ultimos_4:        form.numero.replace(/\s/g, '').slice(-4),
         transaction_id:   transactionId,
         estado:           'confirmada',
       });
-
       if (dbError) throw new Error(dbError.message);
 
-      // 5. Navegar al comprobante con los datos para mostrar el QR
       router.replace({
         pathname: '/comprobante',
         params: {
           transactionId,
           hospedajeNombre: params.hospedajeNombre ?? '',
-          monto:           params.monto ?? '0',
-          checkin:         params.checkin ?? '',
-          checkout:        params.checkout ?? '',
-          // Últimos 4 para mostrar "•••• •••• •••• 1234" en el comprobante
-          ultimos4:        form.numero.replace(/\s/g, '').slice(-4),
+          monto:    String(montoTotal),
+          checkin:  toISO(checkin),
+          checkout: toISO(checkout),
+          ultimos4: form.numero.replace(/\s/g, '').slice(-4),
         },
-      });
+      } as any);
 
     } catch (err: any) {
       Alert.alert('Error en el pago', err.message ?? 'Ocurrió un error inesperado.');
@@ -141,5 +144,11 @@ export function usePago(params: PagoParams) {
     }
   };
 
-  return { form, update, loading, redSocial, handlePagar };
+  return {
+    form, update, loading,
+    redSocial, nights, montoTotal,
+    checkin, checkout,
+    handleCheckinChange, handleCheckoutChange,
+    handlePagar,
+  };
 }
