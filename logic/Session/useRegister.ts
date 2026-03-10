@@ -1,5 +1,5 @@
 //logic/Session/useRegister.ts
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { signUp } from '../auth/useAuth';
 
@@ -43,8 +43,14 @@ export function useRegister({ onSuccess }: UseRegisterOptions = {}) {
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
 
-  const update = (key: keyof FormData) => (val: string) =>
-    setForm(prev => ({ ...prev, [key]: val }));
+  const update = useCallback((key: keyof FormData) => (val: string) => {
+    setForm(prev => {
+      // Si el valor no ha cambiado, no actualizamos para evitar renders extra
+      if (prev[key] === val) return prev; 
+      return { ...prev, [key]: val };
+    });
+  }, []);
+
 
   const handleRegister = async () => {
     const error = validate(form);

@@ -1,6 +1,6 @@
 
 //logic/Session/useLogin.ts
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Alert } from 'react-native';
 import { signIn } from '../auth/useAuth';
 
@@ -29,8 +29,13 @@ export function useLogin({ onSuccess }: UseLoginOptions = {}) {
   const [form, setForm] = useState<LoginForm>(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
 
-  const update = (key: keyof LoginForm) => (val: string) =>
-    setForm(prev => ({ ...prev, [key]: val }));
+  const updateEmail = useCallback((val: string) => {
+    setForm(prev => ({ ...prev, email: val }));
+  }, []);
+
+  const updatePassword = useCallback((val: string) => {
+    setForm(prev => ({ ...prev, password: val }));
+  }, []);
 
   const handleLogin = async () => {
     const error = validate(form);
@@ -50,5 +55,11 @@ export function useLogin({ onSuccess }: UseLoginOptions = {}) {
     }
   };
 
-  return { form, update, loading, handleLogin };
+  return { 
+    form, 
+    updateEmail,      
+    updatePassword,   
+    loading, 
+    handleLogin 
+  };
 }

@@ -20,12 +20,13 @@ interface FieldProps {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
 }
 
-const Field = ({
+const Field = React.memo(({
   label, icon, value, onChangeText, placeholder,
   keyboardType, secureTextEntry, onToggleSecure, showSecure,
   autoCapitalize = 'none',
 }: FieldProps) => {
   const [focused, setFocused] = useState(false);
+
   return (
     <View style={s.field}>
       <Text style={s.label}>{label}</Text>
@@ -35,14 +36,17 @@ const Field = ({
           style={s.input}
           placeholder={placeholder}
           placeholderTextColor="#2a5a5a"
+          // IMPORTANTE: Asegúrate de que value y onChangeText sean directos
           value={value}
-          onChangeText={onChangeText}
+          onChangeText={onChangeText} 
           keyboardType={keyboardType || 'default'}
           secureTextEntry={secureTextEntry}
           autoCapitalize={autoCapitalize}
           autoCorrect={false}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
+          // Añade esto para evitar que el sistema pierda la referencia
+          key={label} 
         />
         {onToggleSecure && (
           <TouchableOpacity onPress={onToggleSecure} style={s.eyeBtn}>
@@ -50,10 +54,11 @@ const Field = ({
           </TouchableOpacity>
         )}
       </View>
-      {focused && <View style={s.fieldUnderline} />}
+      {/* CORRECCIÓN: Evita el renderizado condicional del View, usa opacidad */}
+      <View style={[s.fieldUnderline, { opacity: focused ? 0.6 : 0 }]} />
     </View>
   );
-};
+});
 
 interface RegisterFormProps {
   form: FormData;
@@ -104,10 +109,80 @@ export default function RegisterForm({
         </View>
       </View>
 
-      <Field label="CELULAR" icon="📱" value={form.celular} onChangeText={update('celular')} placeholder="+593 99 999 9999" keyboardType="phone-pad" />
-      <Field label="CORREO ELECTRÓNICO" icon="✉" value={form.email} onChangeText={update('email')} placeholder="correo@ejemplo.com" keyboardType="email-address" />
-      <Field label="CONTRASEÑA" icon="🔒" value={form.password} onChangeText={update('password')} placeholder="Mínimo 6 caracteres" secureTextEntry={!showPassword} onToggleSecure={() => setShowPassword(p => !p)} showSecure={showPassword} />
-      <Field label="CONFIRMAR CONTRASEÑA" icon="🔑" value={form.confirmPassword} onChangeText={update('confirmPassword')} placeholder="Repite tu contraseña" secureTextEntry={!showConfirm} onToggleSecure={() => setShowConfirm(p => !p)} showSecure={showConfirm} />
+     {/* CELULAR */}
+<View style={s.field}>
+  <Text style={s.label}>CELULAR</Text>
+  <View style={s.inputWrap}>
+    <Text style={s.inputIcon}>📱</Text>
+    <TextInput 
+      style={s.input} 
+      placeholder="+593 99 999 9999" 
+      placeholderTextColor="#2a5a5a" 
+      value={form.celular} 
+      onChangeText={update('celular')} 
+      keyboardType="phone-pad" 
+      autoCorrect={false}
+    />
+  </View>
+</View>
+
+{/* CORREO ELECTRÓNICO */}
+<View style={s.field}>
+  <Text style={s.label}>CORREO ELECTRÓNICO</Text>
+  <View style={s.inputWrap}>
+    <Text style={s.inputIcon}>✉</Text>
+    <TextInput 
+      style={s.input} 
+      placeholder="correo@ejemplo.com" 
+      placeholderTextColor="#2a5a5a" 
+      value={form.email} 
+      onChangeText={update('email')} 
+      keyboardType="email-address" 
+      autoCapitalize="none"
+      autoCorrect={false}
+    />
+  </View>
+</View>
+
+{/* CONTRASEÑA */}
+<View style={s.field}>
+  <Text style={s.label}>CONTRASEÑA</Text>
+  <View style={s.inputWrap}>
+    <Text style={s.inputIcon}>🔒</Text>
+    <TextInput 
+      style={s.input} 
+      placeholder="Mínimo 6 caracteres" 
+      placeholderTextColor="#2a5a5a" 
+      value={form.password} 
+      onChangeText={update('password')} 
+      secureTextEntry={!showPassword}
+      autoCapitalize="none"
+    />
+    <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={s.eyeBtn}>
+      <Text style={s.eyeText}>{showPassword ? '🙈' : '👁'}</Text>
+    </TouchableOpacity>
+  </View>
+</View>
+
+{/* CONFIRMAR CONTRASEÑA */}
+<View style={s.field}>
+  <Text style={s.label}>CONFIRMAR CONTRASEÑA</Text>
+  <View style={s.inputWrap}>
+    <Text style={s.inputIcon}>🔑</Text>
+    <TextInput 
+      style={s.input} 
+      placeholder="Repite tu contraseña" 
+      placeholderTextColor="#2a5a5a" 
+      value={form.confirmPassword} 
+      onChangeText={update('confirmPassword')} 
+      secureTextEntry={!showConfirm}
+      autoCapitalize="none"
+    />
+    <TouchableOpacity onPress={() => setShowConfirm(!showConfirm)} style={s.eyeBtn}>
+      <Text style={s.eyeText}>{showConfirm ? '🙈' : '👁'}</Text>
+    </TouchableOpacity>
+  </View>
+</View>
 
       {/* Botón */}
       <Animated.View style={{ transform: [{ scale: scaleBtn }], marginTop: 8 }}>

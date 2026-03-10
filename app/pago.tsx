@@ -1,5 +1,4 @@
 // app/pago.tsx
-// Solo render — toda la lógica está en logic/pago/usePago.ts
 import React, { useRef, useEffect, useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, SafeAreaView,
@@ -12,9 +11,9 @@ import {
   usePago, formatCardNumber, formatExpiry,
   formatDate, diffDays,
 } from '../logic/pago/usePago';
-import { s, BG, AQUA, BORDER, MUTED } from '../components/pago.styles';
+import { s, BG, AQUA } from '../components/pago.styles';
 
-// ─── Selector de fechas (solo UI) ─────────────────────────────────────────────
+// ─── Selector de fechas ───────────────────────────────────────────────────────
 function DateSelector({
   checkin, checkout, onCheckinChange, onCheckoutChange,
 }: {
@@ -24,7 +23,6 @@ function DateSelector({
 }) {
   const [showPicker, setShowPicker] = useState<'checkin' | 'checkout' | null>(null);
   const [tempDate,   setTempDate]   = useState(new Date());
-
   const nights = diffDays(checkin, checkout);
 
   const openPicker = (type: 'checkin' | 'checkout') => {
@@ -81,7 +79,25 @@ function DateSelector({
         </View>
       </View>
 
-      {showPicker && (
+      {/* Android: picker nativo directo, sin Modal wrapper */}
+      {showPicker && Platform.OS === 'android' && (
+        <DateTimePicker
+          value={tempDate}
+          mode="date"
+          display="default"
+          minimumDate={showPicker === 'checkout' ? checkin : new Date()}
+          onChange={(_, date) => {
+            setShowPicker(null);
+            if (date) {
+              if (showPicker === 'checkin')  onCheckinChange(date);
+              if (showPicker === 'checkout') onCheckoutChange(date);
+            }
+          }}
+        />
+      )}
+
+      {/* iOS: modal custom */}
+      {showPicker && Platform.OS === 'ios' && (
         <Modal transparent animationType="slide" onRequestClose={() => setShowPicker(null)}>
           <TouchableOpacity style={s.modalBackdrop} activeOpacity={1} onPress={() => setShowPicker(null)}>
             <TouchableOpacity activeOpacity={1}>
@@ -98,7 +114,7 @@ function DateSelector({
                 <DateTimePicker
                   value={tempDate}
                   mode="date"
-                  display={Platform.OS === 'ios' ? 'inline' : 'default'}
+                  display="inline"
                   minimumDate={showPicker === 'checkout' ? checkin : new Date()}
                   onChange={(_, date) => { if (date) setTempDate(date); }}
                   themeVariant="dark"
@@ -139,11 +155,15 @@ export default function PagoScreen() {
     handlePagar,
   } = usePago(params);
 
-  // Animaciones de entrada
   const fadeAnim     = useRef(new Animated.Value(0)).current;
   const slideAnim    = useRef(new Animated.Value(30)).current;
   const btnScale     = useRef(new Animated.Value(1)).current;
   const resumenScale = useRef(new Animated.Value(0.95)).current;
+
+  const numeroRef  = useRef<TextInput>(null);
+  const titularRef = useRef<TextInput>(null);
+  const expiryRef  = useRef<TextInput>(null);
+  const cvvRef     = useRef<TextInput>(null);
 
   useEffect(() => {
     Animated.parallel([
@@ -153,8 +173,6 @@ export default function PagoScreen() {
     ]).start();
   }, []);
 
-  const [focused, setFocused] = useState<string | null>(null);
-  const inputStyle = (name: string) => [s.inputRow, focused === name && s.inputFocused];
 
   return (
     <SafeAreaView style={s.safe}>
@@ -211,53 +229,57 @@ export default function PagoScreen() {
             {/* Número */}
             <View style={s.field}>
               <Text style={s.label}>Número de tarjeta</Text>
-              <View style={inputStyle('numero')}>
-                <Text style={s.networkIcon}>{redSocial}</Text>
+              <View style={s.inputWrap}>
+                <Text style={s.inputIcon}>{redSocial}</Text>
                 <TextInput
+                  ref={numeroRef}
                   style={s.input} placeholder="0000 0000 0000 0000" placeholderTextColor="#1a4a45"
                   value={form.numero} onChangeText={v => update('numero')(formatCardNumber(v))}
                   keyboardType="numeric" maxLength={19}
-                  onFocus={() => setFocused('numero')} onBlur={() => setFocused(null)}
+                  returnKeyType="next" onSubmitEditing={() => titularRef.current?.focus()}
                 />
               </View>
             </View>
-
+            
             {/* Titular */}
             <View style={s.field}>
               <Text style={s.label}>Titular</Text>
-              <View style={inputStyle('titular')}>
-                <Text style={s.networkIcon}>👤</Text>
+              <View style={s.inputWrap}>
+                <Text style={s.inputIcon}>👤</Text>
                 <TextInput
+                  ref={titularRef}
                   style={s.input} placeholder="Nombre como aparece en la tarjeta" placeholderTextColor="#1a4a45"
                   value={form.titular} onChangeText={update('titular')} autoCapitalize="characters"
-                  onFocus={() => setFocused('titular')} onBlur={() => setFocused(null)}
+                  returnKeyType="next" onSubmitEditing={() => expiryRef.current?.focus()}
                 />
               </View>
             </View>
-
+            
             {/* Expiración + CVV */}
             <View style={s.row}>
               <View style={[s.field, { flex: 1 }]}>
                 <Text style={s.label}>Expiración</Text>
-                <View style={inputStyle('expiry')}>
-                  <Text style={s.networkIcon}>📅</Text>
+                <View style={s.inputWrap}>
+                  <Text style={s.inputIcon}>📅</Text>
                   <TextInput
+                    ref={expiryRef}
                     style={s.input} placeholder="MM/AA" placeholderTextColor="#1a4a45"
                     value={form.expiry} onChangeText={v => update('expiry')(formatExpiry(v))}
                     keyboardType="numeric" maxLength={5}
-                    onFocus={() => setFocused('expiry')} onBlur={() => setFocused(null)}
+                    returnKeyType="next" onSubmitEditing={() => cvvRef.current?.focus()}
                   />
                 </View>
               </View>
               <View style={[s.field, { flex: 1 }]}>
                 <Text style={s.label}>CVV</Text>
-                <View style={inputStyle('cvv')}>
-                  <Text style={s.networkIcon}>🔐</Text>
+                <View style={s.inputWrap}>
+                  <Text style={s.inputIcon}>🔐</Text>
                   <TextInput
+                    ref={cvvRef}
                     style={s.input} placeholder="123" placeholderTextColor="#1a4a45"
                     value={form.cvv} onChangeText={v => update('cvv')(v.replace(/\D/g, '').slice(0, 4))}
                     keyboardType="numeric" maxLength={4} secureTextEntry
-                    onFocus={() => setFocused('cvv')} onBlur={() => setFocused(null)}
+                    returnKeyType="done" onSubmitEditing={handlePagar}
                   />
                 </View>
               </View>
