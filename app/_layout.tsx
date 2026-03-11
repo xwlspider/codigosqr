@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { supabase } from "../logic/supabase/supabase"; 
+import { supabase } from "../logic/supabase/supabase";
+import { usePushNotifications } from "../logic/lib/core/notifications/usePushNotifications"; // 👈 AÑADIR
 
 export default function RootLayout() {
   const [session, setSession] = useState<any>(null);
   const [initialized, setInitialized] = useState(false);
   const segments = useSegments();
   const router = useRouter();
+
+  usePushNotifications(session?.user?.id); // 👈 AÑADIR — registra el dispositivo al loguearse
 
   useEffect(() => {
     // 1. Escuchar cambios en la sesión de Supabase

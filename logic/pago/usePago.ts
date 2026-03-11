@@ -27,7 +27,6 @@ export const formatExpiry = (val: string) => {
   return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
 };
 
-// ── Texto plano en vez de emoji para que se vea en blanco ──────────────────
 export const detectNetwork = (num: string): string => {
   if (/^4/.test(num))      return 'VISA';
   if (/^5[1-5]/.test(num)) return 'MC';
@@ -114,7 +113,7 @@ export function usePago(params: PagoParams) {
         monto:            montoTotal,
         ultimos_4:        form.numero.replace(/\s/g, '').slice(-4),
         transaction_id:   transactionId,
-        estado:           'confirmada',
+        estado:           'pagado', // 👈 CAMBIADO: era 'confirmada' — dispara el trigger de notificaciones
       });
       if (dbError) throw new Error(dbError.message);
 

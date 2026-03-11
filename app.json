@@ -45,7 +45,14 @@
           "cameraPermission": "Permite escanear códigos QR de comprobantes."
         }
       ],
-      "@react-native-community/datetimepicker"
+     "@react-native-community/datetimepicker",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/staylyLogo.png",
+          "color": "#599E9E"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
