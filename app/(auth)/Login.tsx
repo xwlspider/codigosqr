@@ -48,7 +48,7 @@ export default function LoginScreen() {
         {/* Header */}
         <View style={s.header}>
           <Image 
-            source={require('../../assets/images/staylyLogo.png')} 
+            source={require('../../assets/images/stayly_logo.png')} 
             style={s.logoImage} // <-- Usamos este nuevo estilo
             resizeMode="contain" // <-- Importante para que no se deforme
           />
