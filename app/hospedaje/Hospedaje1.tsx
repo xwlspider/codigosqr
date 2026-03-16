@@ -8,7 +8,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Simón Bolívar, junto a Dos Chorreras',
   precio: '$30',
   descripcion: 'Pasa aquí junto a las delicias más esperadas y una noche en tus sueños cerca al Parque Calderón de Cuenca. Un ambiente acogedor, tranquilo y lleno de encanto para descansar como nunca.',
-  imagen: require('../../assets/images/Hospedaje1FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje1_foto1.png'),
   tag: 'Popular',
   tagColor: '#f97316',
   habitaciones: 8,

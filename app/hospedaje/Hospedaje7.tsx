@@ -6,7 +6,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Bajada del Padrón, orillas del Tomebamba',
   precio: '$38',
   descripcion: 'Al borde del barranco más famoso de Cuenca. Silencio, naturaleza y una hospitalidad que te hace sentir como en casa.',
-  imagen: require('../../assets/images/Hospedaje7FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje7_foto1.png'),
   tag: 'Naturaleza',
   tagColor: '#16a34a',
   habitaciones: 6,

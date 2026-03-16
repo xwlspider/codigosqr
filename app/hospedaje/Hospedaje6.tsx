@@ -6,7 +6,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Av. Solano, esquina con Remigio Crespo',
   precio: '$65',
   descripcion: 'Vistas panorámicas del Tomebamba desde cada habitación. Despierta con el sonido del río y el verde de los eucaliptos.',
-  imagen: require('../../assets/images/Hospedaje6FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje6_foto1.png'),
   tag: 'Vistas',
   tagColor: '#06b6d4',
   habitaciones: 10,

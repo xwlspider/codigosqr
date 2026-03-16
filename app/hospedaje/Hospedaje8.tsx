@@ -6,7 +6,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Mirador de Turi, vía a Baños',
   precio: '$150',
   descripcion: 'El único hospedaje con vista completa a toda la ciudad iluminada de noche. Una experiencia que no se repite.',
-  imagen: require('../../assets/images/Hospedaje8FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje8_foto1.png'),
   tag: 'Lujo',
   tagColor: '#f59e0b',
   habitaciones: 5,

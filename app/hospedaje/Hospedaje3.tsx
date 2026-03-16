@@ -8,7 +8,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Simón Bolívar, junto a Tutto Freddo',
   precio: '$12',
   descripcion: 'Te vamos a amar, elígenos. La opción más económica sin sacrificar comodidad. Ubicado en el corazón de Cuenca, ideal para mochileros y viajeros que buscan lo esencial con mucho cariño.',
-  imagen: require('../../assets/images/Hospedaje3FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje3_foto1.png'),
   tag: 'Económico',
   tagColor: '#22c55e',
   habitaciones: 6,

@@ -8,7 +8,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Chola Cuencana, cerca de los Chorizos de la Abuela',
   precio: '$120',
   descripcion: 'Ven con cuidado de engordar y dormir como bebé. Un hotel de primera categoría rodeado de los mejores sabores de Cuenca. Habitaciones amplias, lujosas y con todo lo que necesitas para una estadía perfecta.',
-  imagen: require('../../assets/images/Hospedaje2FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje2_foto1.png'),
   tag: 'Premium',
   tagColor: '#eab308',
   habitaciones: 24,

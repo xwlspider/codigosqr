@@ -8,7 +8,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Parque de la Madre',
   precio: '$90',
   descripcion: 'La mejor opción para elegir. Frente al Parque de la Madre, con vistas increíbles y una atención personalizada que te hará sentir como en casa. Perfecto para familias y parejas.',
-  imagen: require('../../assets/images/Hospedaje4FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje4_foto1.png'),
   tag: 'Destacado',
   tagColor: '#a855f7',
   habitaciones: 15,

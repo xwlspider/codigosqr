@@ -6,7 +6,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Av. 12 de Abril, junto al río Yanuncay',
   precio: '$75',
   descripcion: 'Moderno y tranquilo, al costado del río que serpentea entre jardines. Ideal para familias y parejas que buscan calma.',
-  imagen: require('../../assets/images/Hospedaje10FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje10_foto1.png'),
   tag: 'Familiar',
   tagColor: '#3b82f6',
   habitaciones: 18,

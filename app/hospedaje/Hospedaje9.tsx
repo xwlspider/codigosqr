@@ -6,7 +6,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Gran Colombia, cerca del terminal de buses',
   precio: '$10',
   descripcion: 'El punto de encuentro de los viajeros del mundo. Camas cómodas, cocina compartida y mucha vida social.',
-  imagen: require('../../assets/images/Hospedaje9FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje9_foto1.png'),
   tag: 'Hostal',
   tagColor: '#84cc16',
   habitaciones: 4,

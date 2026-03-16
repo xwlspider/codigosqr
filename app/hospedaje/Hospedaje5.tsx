@@ -6,7 +6,7 @@ const data: HospedajeDetalle = {
   ubicacion: 'Calle Larga, frente al Museo del Sombrero',
   precio: '$45',
   descripcion: 'Una casona colonial restaurada con alma bohemia. Paredes de adobe, techos altos y un patio con buganvillas que te harán olvidar el reloj.',
-  imagen: require('../../assets/images/Hospedaje5FOTO1.png'),
+  imagen: require('../../assets/images/hospedaje5_foto1.png'),
   tag: 'Boutique',
   tagColor: '#ec4899',
   habitaciones: 7,
