@@ -4,7 +4,7 @@
     "slug": "codigosqr",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/assets/images/stayly_logo.png",
+    "icon": "./assets/images/stayly_logo.png",
     "scheme": "codigosqr",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     "android": {
       "package": "com.xwlspider.stayly",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/assets/images/stayly_logo.png"
+        "foregroundImage": "./assets/images/stayly_logo.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -25,14 +25,14 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/assets/images/stayly_logo.png"
+      "favicon": "./assets/images/stayly_logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/assets/images/stayly_logo.png",
+          "image": "./assets/imagesstayly_logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -52,7 +52,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/assets/images/stayly_logo.png",
+          "icon": "./assets/images/stayly_logo.png",
           "color": "#599E9E"
         }
       ]
