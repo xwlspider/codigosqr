@@ -113,7 +113,7 @@ export function usePago(params: PagoParams) {
         monto:            montoTotal,
         ultimos_4:        form.numero.replace(/\s/g, '').slice(-4),
         transaction_id:   transactionId,
-        estado:           'pagado', // 👈 CAMBIADO: era 'confirmada' — dispara el trigger de notificaciones
+        estado:           'confirmada', 
       });
       if (dbError) throw new Error(dbError.message);
 

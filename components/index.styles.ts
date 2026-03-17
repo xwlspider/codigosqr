@@ -52,13 +52,46 @@ export const styles = StyleSheet.create({
   ctaText:      { fontSize: 13, fontWeight: '700', color: AQUA },
 
   // ── Tab bar ───────────────────────────────────────────────
-  tabBar:        { flexDirection: 'row', backgroundColor: '#020f0e', borderTopWidth: 1, borderTopColor: BORDER, paddingBottom: 8, paddingTop: 4 },
-  tabBtn:        { flex: 1, alignItems: 'center' },
-  tabBtnInner:   { alignItems: 'center', paddingVertical: 8, gap: 3 },
-  tabIcon:       { fontSize: 20 },
-  tabLabel:      { fontSize: 10, color: MUTED, fontWeight: '600', letterSpacing: 0.3 },
-  tabLabelActive:{ color: AQUA },
-  tabIndicator:  { position: 'absolute', top: 0, left: 0, width: '33.33%', height: 2, backgroundColor: AQUA },
+  tabBar: { 
+    flexDirection: 'row', 
+    backgroundColor: '#020f0e', 
+    borderTopWidth: 1, 
+    borderTopColor: BORDER, 
+    paddingBottom: 8, 
+    paddingTop: 4,
+    position: 'relative' // Asegura que el indicador se posicione bien
+  },
+  tabBtn: { 
+    flex: 1, 
+    alignItems: 'center',
+    zIndex: 2 // Por encima del indicador
+  },
+  tabIndicator: { 
+    position: 'absolute', 
+    top: 0, 
+    left: 0, 
+    height: 2, 
+    backgroundColor: AQUA,
+    zIndex: 1 
+  },
+
+  tabBtnInner: { 
+    alignItems: 'center', 
+    paddingVertical: 8, 
+    gap: 3 
+  },
+  tabIcon: { 
+    fontSize: 20 
+  },
+  tabLabel: { 
+    fontSize: 10, 
+    color: '#3a8a80', // MUTED
+    fontWeight: '600', 
+    letterSpacing: 0.3 
+  },
+  tabLabelActive: { 
+    color: '#00e5cc' // AQUA
+  },
 
   // ── Scanner tab ───────────────────────────────────────────
   centerTab:      { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },

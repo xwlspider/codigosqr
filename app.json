@@ -13,6 +13,7 @@
     },
     "android": {
       "package": "com.xwlspider.stayly",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/stayly_logo.png"
       },
