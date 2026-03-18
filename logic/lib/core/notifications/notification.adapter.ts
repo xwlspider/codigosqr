@@ -67,10 +67,8 @@ export const NotificationAdapter = {
 
       // D. Obtenemos el Token
       token = (await Notifications.getExpoPushTokenAsync({
-        projectId: Constants.expoConfig?.extra?.eas?.projectId,
+        projectId: "07ba0a2c-c707-4a3d-a7e4-28753892dc80", 
       })).data;
-
-    } else {
       console.log('Debes usar un dispositivo físico para probar Push Notifications');
     }
 
